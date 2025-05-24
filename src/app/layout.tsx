@@ -18,6 +18,11 @@ const bricolageGrotesque = Bricolage_Grotesque({
 export const metadata: Metadata = {
   title: "Shining Light School",
   description: "Empowering minds, shaping futures.",
+  icons: {
+    icon: '/logo.png', // This sets the favicon
+    apple: '/logo.png',
+    shortcut: '/logo.png',
+  },
 };
 
 export default function RootLayout({
