@@ -14,9 +14,8 @@ export default function LogoutButton() {
     const { mutate } = useMutation({
         mutationFn: logout,
         onSuccess: () => {
-          logoutFromStore()
           router.push('/admission/portal/login')
-          toast.success("Logged out successfully")
+          logoutFromStore()
         }
     })
   return (
