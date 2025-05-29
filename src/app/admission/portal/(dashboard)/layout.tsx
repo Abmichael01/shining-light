@@ -49,7 +49,7 @@ export default function DashboardLayout({
       router.push("/admission/portal/login");
   }
 
-  return (
+  if (isAuthenticated) return (
     <section className="flex h-screen bg-gray-50 relative overflow-y-auto">
       {/* Mobile sidebar */}
       {isOpen && (
