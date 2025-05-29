@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export default function DashboardLayout({
   children,
@@ -27,8 +28,11 @@ export default function DashboardLayout({
   useEffect(() => {
     if (data) {
       setUser(data);
+    }else {
+      toast.error("Please login to continue")
+      router.push("/admission/portal/login");
     }
-  }, [ data, setUser ])
+  }, [ data ])
 
 
   if (isLoading) {
@@ -42,11 +46,7 @@ export default function DashboardLayout({
     );
   }
 
-  if (!data) {
-    router.push("/admission/portal/login");
-    return null; // Prevent rendering the layout if user data is not available
-  }
-
+  
   return (
     <section className="flex h-screen bg-gray-50 relative overflow-y-auto">
       {/* Mobile sidebar */}

@@ -5,7 +5,6 @@ import { refreshToken } from './apiEndpoints'; // Adjust path as needed
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/',
   withCredentials: true,
-  
 });
 
 // Maintain a queue of pending requests to retry after token refresh
@@ -36,9 +35,13 @@ apiClient.interceptors.response.use(
           failedRequestsQueue = [];
           return apiClient(originalRequest);
         } catch (refreshError) {
-          // If refresh fails, clear queue and reject all
+          // Clear queue and reject all
           failedRequestsQueue.forEach(({ reject }) => reject(refreshError));
           failedRequestsQueue = [];
+
+          // 🔥 Redirect to login if refresh fails
+          window.location.href = '/admission/portal/login';
+
           return Promise.reject(refreshError);
         } finally {
           isRefreshing = false;
