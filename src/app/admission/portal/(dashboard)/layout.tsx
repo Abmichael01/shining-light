@@ -28,7 +28,8 @@ export default function DashboardLayout({
   useEffect(() => {
     if (data) {
       setUser(data);
-    }else {
+    }
+    if (!data && !isLoading) {
       toast.error("Please login to continue")
       router.push("/admission/portal/login");
     }
@@ -45,7 +46,6 @@ export default function DashboardLayout({
       </div>
     );
   }
-
   
   return (
     <section className="flex h-screen bg-gray-50 relative overflow-y-auto">
