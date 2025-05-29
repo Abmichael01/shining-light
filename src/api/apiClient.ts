@@ -1,60 +1,47 @@
-// lib/apiClient.ts
-import axios from 'axios';
-import { refreshToken } from './apiEndpoints'; // Adjust path as needed
+import axios from "axios";
+import { useAuthStore } from "@/stores/useAuthStore";
+
 
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/',
-  withCredentials: true,
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true, 
+  headers: {
+    "Content-Type": "application/json",
+  },
+  timeout: 10000, 
 });
 
-// Maintain a queue of pending requests to retry after token refresh
-let isRefreshing = false;
-let failedRequestsQueue: Array<{ resolve: (value?: any) => void; reject: (error?: any) => void }> = [];
+const refreshToken = async () => {
+  const response = await axios.post(
+    `${process.env.NEXT_PUBLIC_API_URL}accounts/refresh-token/`,
+    {},
+    {
+      withCredentials: true, 
+    }
+  );
+  return response.data; 
+};
 
-// Axios Interceptor
+
+// Interceptor to handle 401 errors
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => response, // ✅ Pass successful responses
   async (error) => {
     const originalRequest = error.config;
+    const authStore = useAuthStore.getState();
 
-    // If there's no error response or already retried, reject
-    if (!error.response || originalRequest._retry) {
-      return Promise.reject(error);
-    }
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true; // ✅ Prevent infinite loops
 
-    // Only handle 401 Unauthorized
-    if (error.response.status === 401) {
-      if (!isRefreshing) {
-        isRefreshing = true;
-
-        try {
-          await refreshToken(); // Calls /auth/refresh and sets new access_token in cookie
-
-          // Retry all queued requests
-          failedRequestsQueue.forEach(({ resolve }) => resolve());
-          failedRequestsQueue = [];
-          return apiClient(originalRequest);
-        } catch (refreshError) {
-          // Clear queue and reject all
-          failedRequestsQueue.forEach(({ reject }) => reject(refreshError));
-          failedRequestsQueue = [];
-
-          // 🔥 Redirect to login if refresh fails
-          window.location.href = '/admission/portal/login';
-
-          return Promise.reject(refreshError);
-        } finally {
-          isRefreshing = false;
-        }
-      } else {
-        // Queue the request until token is refreshed
-        return new Promise((resolve, reject) => {
-          failedRequestsQueue.push({ resolve, reject });
-        });
+      try {
+        await refreshToken(); // ✅ Attempt to refresh the token
+        return apiClient(originalRequest); // ✅ Retry the original request
+      } catch {
+        authStore.logout(); // ✅ Clear user data
+        // window.location.href = "/auth/login"; // ✅ Redirect to login if needed
       }
     }
 
-    // For other errors, just reject
     return Promise.reject(error);
   }
 );

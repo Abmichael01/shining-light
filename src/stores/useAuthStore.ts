@@ -4,7 +4,6 @@ import { persist, devtools, createJSONStorage } from 'zustand/middleware';
 import { AuthState, User } from '@/types';
 
 export const useAuthStore = create<AuthState>()(
-  devtools(
     persist(
       (set) => ({
         user: null,
@@ -25,5 +24,4 @@ export const useAuthStore = create<AuthState>()(
         storage: createJSONStorage(() => localStorage), // 👈 proper storage adapter
       }
     )
-  )
 );

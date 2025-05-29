@@ -27,12 +27,9 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (data) {
-      setUser(data);
+     setUser(data);
     }
-    if (!data && !isLoading) {
-      toast.error("Please login to continue")
-      router.push("/admission/portal/login");
-    }
+
   }, [ data ])
 
 
@@ -47,6 +44,11 @@ export default function DashboardLayout({
     );
   }
   
+  if (!isAuthenticated) {
+      toast.error("Please login to continue")
+      router.push("/admission/portal/login");
+  }
+
   return (
     <section className="flex h-screen bg-gray-50 relative overflow-y-auto">
       {/* Mobile sidebar */}

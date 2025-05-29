@@ -20,6 +20,7 @@ import { login } from "@/api/apiEndpoints";
 import { LoginPayload } from "@/types";
 import { useRouter } from 'next/navigation';
 import {toast} from "sonner"
+import { useAuthStore } from "@/stores/useAuthStore";
 
 // 🔧 Define Form Schema
 const formSchema = z.object({
@@ -59,10 +60,13 @@ export default function LoginForm() {
     },
   });
   const router = useRouter();
+  const { setUser } = useAuthStore();
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: LoginPayload) => login(data),
-    onSuccess: () => {
+    onSuccess: (res) => {
+      console.log("Login successful:", res.user);
+      setUser(res.user);
       router.push('/admission/portal');
       toast.success("Login successful! Redirecting...");
     },
