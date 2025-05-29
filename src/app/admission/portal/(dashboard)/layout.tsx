@@ -6,6 +6,7 @@ import Sidebar from "@/components/Admission/Portal/Dashboard/Sidebar";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useSidebarStore } from "@/stores/useSidebarStore";
 import { useQuery } from "@tanstack/react-query";
+import { LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -24,12 +25,6 @@ export default function DashboardLayout({
   const router = useRouter()
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/admission/portal/login");
-    }
-  }, [isAuthenticated, router]);
-
-  useEffect(() => {
     if (data) {
       setUser(data);
     }
@@ -38,8 +33,11 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-gray-500">Loading...</p>
+      <div className="flex flex-col gap-5 items-center justify-center h-screen">
+        <img src="/logo.png" alt="" className="h-20" />
+        <div className="">
+          <LoaderIcon className="size-6 animate-spin text-primary" />
+        </div>
       </div>
     );
   }

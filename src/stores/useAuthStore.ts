@@ -1,25 +1,19 @@
 // stores/useAuthStore.ts
 import { create } from 'zustand';
-import { persist, devtools } from 'zustand/middleware';
+import { persist, devtools, createJSONStorage } from 'zustand/middleware';
 import { AuthState, User } from '@/types';
-
-const initialState = {
-  user: null as User | null,
-  isAuthenticated: false,
-};
 
 export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
       (set) => ({
-        ...initialState,
-
+        user: null,
+        isAuthenticated: false,
         setUser: (userData: User) =>
           set({
             user: userData,
             isAuthenticated: true,
           }),
-
         logout: () =>
           set({
             user: null,
@@ -28,6 +22,7 @@ export const useAuthStore = create<AuthState>()(
       }),
       {
         name: 'auth-storage',
+        storage: createJSONStorage(() => localStorage), // 👈 proper storage adapter
       }
     )
   )
