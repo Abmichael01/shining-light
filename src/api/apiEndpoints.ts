@@ -1,4 +1,4 @@
-import { LoginPayload, RegisterPayload, User } from "@/types";
+import { LoginPayload, RegisterPayload, User, BioDataFormData } from "@/types";
 import { apiClient } from "./apiClient";
 
 export const fetchCurrentUser = async (): Promise<User> => {
@@ -25,3 +25,13 @@ export const refreshToken = async (): Promise<User> => {
   const res = await apiClient.post('/accounts/refresh-token/');
   return res.data;
 };
+
+export const submitBioData = async (data: BioDataFormData): Promise<any> => {
+  const res = await apiClient.post('/accounts/biodata/', data);
+  return res.data;
+}
+
+export const getBioData = async (): Promise<BioDataFormData> => {
+  const res = await apiClient.get('/accounts/biodata/');
+  return res.data;
+}

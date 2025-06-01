@@ -21,14 +21,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { BioDataFormData } from "@/types";
+import { getBioData, submitBioData } from "@/api/apiEndpoints";
+import { toast } from "sonner";
+import { LoaderIcon } from "lucide-react";
 
 // 🔧 Define Form Schema
 const formSchema = z.object({
   // Student Info
-  firstName: z.string().min(2, "First name too short"),
-  lastName: z.string().min(2, "Last name too short"),
-  middleName: z.string().optional(),
-  dateOfBirth: z.date({ required_error: "Date of birth is required" }),
+  first_name: z.string().min(2, "First name too short"),
+  last_name: z.string().min(2, "Last name too short"),
+  middle_name: z.string().optional(),
+  date_of_birth: z
+    .string()
+    .min(10, "Invalid date format"),
   gender: z.enum(["male", "female", "other"], {
     errorMap: () => ({ message: "Please select a gender" }),
   }),
@@ -38,10 +45,12 @@ const formSchema = z.object({
   state: z.string().min(3, "State name too short"),
 
   // Parent Info
-  parentName: z.string().min(5, "Parent name too short"),
-  parentPhone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid parent phone"),
-  parentEmail: z.string().email("Invalid parent email").optional(),
-  parentAddress: z.string().min(10, "Parent address too short"),
+  guardians_name: z.string().min(5, "Guardian's name too short"),
+  guardians_phone: z
+    .string()
+    .regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
+  guardians_email: z.string().email("Invalid email").optional(),
+  guardians_address: z.string().min(10, "Address too short"),
 });
 
 // 📦 Dynamic Form Fields Configuration
@@ -50,28 +59,28 @@ const formSections = [
     title: "Student Information",
     fields: [
       {
-        name: "firstName",
+        name: "first_name",
         label: "First Name",
         type: "text",
         placeholder: "John",
         grid: "md:col-span-1",
       },
       {
-        name: "lastName",
+        name: "last_name",
         label: "Last Name",
         type: "text",
         placeholder: "Doe",
         grid: "md:col-span-1",
       },
       {
-        name: "middleName",
+        name: "middle_name",
         label: "Middle Name (Optional)",
         type: "text",
         placeholder: "Ola",
         grid: "md:col-span-1",
       },
       {
-        name: "dateOfBirth",
+        name: "date_of_birth",
         label: "Date of Birth",
         type: "date",
         grid: "md:col-span-1",
@@ -121,28 +130,28 @@ const formSections = [
     title: "Parent/Guardian Information",
     fields: [
       {
-        name: "parentName",
+        name: "guardians_name",
         label: "Full Name",
         type: "text",
         placeholder: "Mr. John Smith",
         grid: "md:col-span-2",
       },
       {
-        name: "parentPhone",
+        name: "guardians_phone",
         label: "Phone Number",
         type: "text",
         placeholder: "+1234567890",
         grid: "md:col-span-1",
       },
       {
-        name: "parentEmail",
+        name: "guardians_email",
         label: "Email (Optional)",
         type: "email",
         placeholder: "parent@example.com",
         grid: "md:col-span-1",
       },
       {
-        name: "parentAddress",
+        name: "guardians_address",
         label: "Home Address",
         type: "textarea",
         placeholder: "123 Main St, City",
@@ -153,29 +162,60 @@ const formSections = [
 ];
 
 export default function BioDataForm() {
+  const  { data, isLoading } = useQuery({
+    queryKey: ["bioData"],
+    queryFn: getBioData
+  });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      middleName: "",
-      dateOfBirth: undefined,
-      gender: "male",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      parentName: "",
-      parentPhone: "",
-      parentEmail: "",
-      parentAddress: "",
+      first_name: data?.first_name || "",
+      last_name: data?.last_name || "",
+      middle_name: data?.middle_name || "",
+      date_of_birth: data?.date_of_birth || "",
+      gender: data?.gender || "male",
+      phone: data?.phone || "",
+      address: data?.address || "",
+      city: data?.city || "",
+      state: data?.state || "",
+      guardians_name: data?.guardians_name || "",
+      guardians_phone: data?.guardians_phone || "",
+      guardians_email: data?.guardians_email || "",
+      guardians_address: data?.guardians_address || "",
+    },
+  });
+  
+  const { mutate, isPending } = useMutation({
+    mutationFn: (data: BioDataFormData) => submitBioData(data),
+    onSuccess: () => {
+      console.log("BioData submitted successfully!");
+      toast.success("BioData submitted successfully!");
+    },
+    onError: (error) => {
+      console.error("Error submitting BioData:", error);
+      // Handle error (e.g., show error message)
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     console.log("BioData submitted:", values);
-    // Replace with your save logic
+    const formattedValues = {
+      ...values,
+      date_of_birth: new Date(values.date_of_birth)
+    };
+    mutate(values);
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-5 items-center justify-center h-screen">
+        <div>
+          <LoaderIcon className="size-6 animate-spin text-primary" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full mx-auto space-y-8 flex flex-col items-center bg-white border rounded-xl p-6 md:p-10">
@@ -289,7 +329,7 @@ export default function BioDataForm() {
               </div>
             </div>
           ))}
-          <GlidingButton className="w-fit float-right">
+          <GlidingButton isLoading={isPending} className="w-fit float-right">
             Save & Continue
           </GlidingButton>
         </form>

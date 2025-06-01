@@ -26,3 +26,22 @@ export type RegisterPayload = {
 export type HeaderDropdownData = {
     
 }
+
+export type BioDataFormData = {
+  // Student Info
+  first_name: string;
+  last_name: string;
+  middle_name?: string;
+  date_of_birth: string;
+  gender: "male" | "female" | "other";
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+
+  // Guardian Info
+  guardians_name: string;
+  guardians_phone: string;
+  guardians_email?: string;
+  guardians_address: string;
+};
