@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BioDataFormData } from "@/types";
-import { getBioData, submitBioData } from "@/api/apiEndpoints";
+import { getBioData, updateBioData } from "@/api/apiEndpoints";
 import { toast } from "sonner";
 import { LoaderIcon } from "lucide-react";
 
@@ -167,27 +167,29 @@ export default function BioDataForm() {
     queryFn: getBioData
   });
 
+  const biodata = data && data.length > 0 ? data[0] : {  } as BioDataFormData;
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      first_name: data?.first_name || "",
-      last_name: data?.last_name || "",
-      middle_name: data?.middle_name || "",
-      date_of_birth: data?.date_of_birth || "",
-      gender: data?.gender || "male",
-      phone: data?.phone || "",
-      address: data?.address || "",
-      city: data?.city || "",
-      state: data?.state || "",
-      guardians_name: data?.guardians_name || "",
-      guardians_phone: data?.guardians_phone || "",
-      guardians_email: data?.guardians_email || "",
-      guardians_address: data?.guardians_address || "",
+      first_name: biodata?.first_name || "",
+      last_name: biodata?.last_name || "",
+      middle_name: biodata?.middle_name || "",
+      date_of_birth: biodata?.date_of_birth || "",
+      gender: biodata?.gender || "male",
+      phone: biodata?.phone || "",
+      address: biodata?.address || "",
+      city: biodata?.city || "",
+      state: biodata?.state || "",
+      guardians_name: biodata?.guardians_name || "",
+      guardians_phone: biodata?.guardians_phone || "",
+      guardians_email: biodata?.guardians_email || "",
+      guardians_address: biodata?.guardians_address || "",
     },
   });
   
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: BioDataFormData) => submitBioData(data),
+    mutationFn: (data: BioDataFormData) => updateBioData(biodata?.id as number, data),
     onSuccess: () => {
       console.log("BioData submitted successfully!");
       toast.success("BioData submitted successfully!");

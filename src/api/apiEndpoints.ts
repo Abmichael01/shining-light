@@ -26,12 +26,12 @@ export const refreshToken = async (): Promise<User> => {
   return res.data;
 };
 
-export const submitBioData = async (data: BioDataFormData): Promise<any> => {
-  const res = await apiClient.post('/accounts/biodata/', data);
-  return res.data;
-}
-
-export const getBioData = async (): Promise<BioDataFormData> => {
+export const getBioData = async (): Promise<BioDataFormData[]> => {
   const res = await apiClient.get('/accounts/biodata/');
   return res.data;
 }
+
+export const updateBioData = async (id: number, data: BioDataFormData): Promise<BioDataFormData> => {
+  const res = await apiClient.put(`/accounts/biodata/${id}/`, data);
+  return res.data;
+};

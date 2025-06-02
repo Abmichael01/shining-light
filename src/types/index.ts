@@ -28,6 +28,7 @@ export type HeaderDropdownData = {
 }
 
 export type BioDataFormData = {
+  id?: number;
   // Student Info
   first_name: string;
   last_name: string;
