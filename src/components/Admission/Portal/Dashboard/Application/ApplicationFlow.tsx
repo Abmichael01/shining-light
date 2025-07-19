@@ -71,9 +71,9 @@ export default function ApplicationFlow() {
   const allCompleted = flows.every((step) => step.completed);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-5">
       {allCompleted && (
-        <div className="mt-10 bg-white border rounded-xl p-6 md:p-10">
+        <div className="bg-white border rounded-xl p-6 md:p-10">
           <div className="flex flex-col items-center text-center">
             <svg
               className="w-12 h-12 text-green-500 mb-4"

@@ -18,9 +18,10 @@ import Link from "next/link"; // Added import
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/api/apiEndpoints";
 import { LoginPayload } from "@/types";
-import { useRouter } from 'next/navigation';
-import {toast} from "sonner"
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useAuthStore } from "@/stores/useAuthStore";
+import errorMessage from "@/lib/utils/errorMessage";
 
 // 🔧 Define Form Schema
 const formSchema = z.object({
@@ -62,17 +63,15 @@ export default function LoginForm() {
   const router = useRouter();
   const { setUser } = useAuthStore();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, error } = useMutation({
     mutationFn: (data: LoginPayload) => login(data),
     onSuccess: (res) => {
       console.log("Login successful:", res.user);
       setUser(res.user);
-      router.push('/admission/portal');
+      router.push("/admission/portal");
       toast.success("Login successful! Redirecting...");
     },
-    onError: (error: any) => {
-      
-    }
+    onError: (error: any) => {},
   });
 
   // 🚀 Submit Handler
@@ -89,6 +88,12 @@ export default function LoginForm() {
       <h2 className="text-xs font-bold text-center bg-secondary py-2 px-10 text-white w-fit rounded-full">
         Login
       </h2>
+
+      {error && (
+        <div className="border border-destructive text-destructive bg-red-100  text-sm   rounded-md p-3 w-full">
+          {errorMessage(error)}
+        </div>
+      )}
 
       <Form {...form}>
         <form

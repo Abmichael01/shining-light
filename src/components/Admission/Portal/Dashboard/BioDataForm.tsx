@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -23,9 +23,11 @@ import {
 } from "@/components/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { BioDataFormData } from "@/types";
-import { getBioData, updateBioData } from "@/api/apiEndpoints";
+import { bioData } from "@/api/apiEndpoints";
 import { toast } from "sonner";
 import { LoaderIcon } from "lucide-react";
+import { useAuthStore } from "@/stores/useAuthStore";
+import errorMessage from "@/lib/utils/errorMessage";
 
 // 🔧 Define Form Schema
 const formSchema = z.object({
@@ -39,7 +41,7 @@ const formSchema = z.object({
   gender: z.enum(["male", "female", "other"], {
     errorMap: () => ({ message: "Please select a gender" }),
   }),
-  phone: z.string().regex(/^\+?[1-9]\d{1,14}$/, "Invalid phone number"),
+  phone: z.string(),
   address: z.string().min(10, "Address too short"),
   city: z.string().min(3, "City name too short"),
   state: z.string().min(3, "State name too short"),
@@ -162,12 +164,15 @@ const formSections = [
 ];
 
 export default function BioDataForm() {
+  const { user } = useAuthStore()
   const  { data, isLoading } = useQuery({
     queryKey: ["bioData"],
-    queryFn: getBioData
+    queryFn: () => bioData.retrieve(user?.id as string),
+    refetchOnWindowFocus: false,
   });
 
-  const biodata = data && data.length > 0 ? data[0] : {  } as BioDataFormData;
+  const biodata = data as BioDataFormData;
+  console.log(data)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -187,16 +192,36 @@ export default function BioDataForm() {
       guardians_address: biodata?.guardians_address || "",
     },
   });
+
+  useEffect(() => {
+    if (biodata) {
+      form.reset({
+        first_name: biodata.first_name || "",
+        last_name: biodata.last_name || "",
+        middle_name: biodata.middle_name || "",
+        date_of_birth: biodata.date_of_birth || "",
+        gender: biodata.gender || "male",
+        phone: biodata.phone || "",
+        address: biodata.address || "",
+        city: biodata.city || "",
+        state: biodata.state || "",
+        guardians_name: biodata.guardians_name || "",
+        guardians_phone: biodata.guardians_phone || "",
+        guardians_email: biodata.guardians_email || "",
+        guardians_address: biodata.guardians_address || "",
+      });
+    }
+  }, [biodata, form]);
   
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: BioDataFormData) => updateBioData(biodata?.id as number, data),
+    mutationFn: (data: BioDataFormData) => bioData.update(user?.id as string, data),
     onSuccess: () => {
       console.log("BioData submitted successfully!");
       toast.success("BioData submitted successfully!");
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("Error submitting BioData:", error);
-      // Handle error (e.g., show error message)
+      toast.error(errorMessage(error))
     },
   });
 

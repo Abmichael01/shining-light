@@ -7,7 +7,7 @@ import { useSidebarStore } from "@/stores/useSidebarStore";
 export default function Header() {
   const { isOpen, toggle } = useSidebarStore();
   return (
-    <header className="h-16 flex items-center justify-between px-4 md:px-6 bg-white border rounded-xl">
+    <header className="py-5 flex items-center justify-between px-4 md:px-6 bg-white border-b">
       {/* Mobile menu button */}
       <button
         className="md:hidden p-2 cursor-pointer rounded-md text-gray-600 hover:text-gray-900 focus:outline-none"

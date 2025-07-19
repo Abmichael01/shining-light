@@ -41,14 +41,14 @@ export default function Sidebar() {
             <h1 className="text-lg font-semibold text-primary">Admission Portal</h1>
           </div>
           
-          <nav className="flex-1 px-2 py-4 space-y-2">
+          <nav className="flex-1 py-4 space-y-2">
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`group flex gap-2 items-center px-4 py-3 text-sm font-medium rounded-xl transition-colors ${
+                className={`group flex gap-2 items-center px-4 py-3 text-sm font-medium transition-colors ${
                   pathname === item.href
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary/10 text-primary border-r-2 border-primary'
                     : 'text-gray-700 hover:bg-gray-100'
                 }`}
                 onClick={toggle} // Close on mobile click

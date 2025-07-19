@@ -76,9 +76,9 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <div className="flex flex-col flex-1">
-        <main className="flex-1 p-4 md:p-8 space-y-8 pb-24">
+        <main className="flex-1 space-y-5 pb-24">
           <Header />
-          <div className="mx-auto">{children}</div>
+          <div className="mx-auto px-4 md:px-8">{children}</div>
         </main>
       </div>
     </section>

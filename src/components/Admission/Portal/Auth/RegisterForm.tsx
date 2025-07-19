@@ -19,7 +19,8 @@ import { useMutation } from "@tanstack/react-query";
 import { RegisterPayload } from "@/types";
 import { register } from "@/api/apiEndpoints";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner"
+import { toast } from "sonner";
+import errorMessage from "@/lib/utils/errorMessage";
 
 // 🔧 Define Form Schema
 const formSchema = z
@@ -77,17 +78,16 @@ export default function RegisterForm() {
 
   const router = useRouter();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending, error } = useMutation({
     mutationFn: (data: RegisterPayload) => register(data),
     onSuccess: () => {
       router.push("/admission/portal/login");
       toast.success("Registration successful! Redirecting to login...");
     },
-    onError: (error: any) => {
-      
+    onError: (error: Error) => {
       // Handle error, show message to user
     },
-  })
+  });
 
   // 🚀 Submit Handler
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -105,8 +105,17 @@ export default function RegisterForm() {
         Register
       </h2>
 
+      {error && (
+        <div className="border border-destructive text-destructive bg-red-100  text-sm   rounded-md p-3 w-full">
+          {errorMessage(error)}
+        </div>
+      )}
+
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 w-full"
+        >
           {/* 🔄 Dynamic Field Mapping */}
           {formFields.map((field) => (
             <FormField
@@ -133,12 +142,17 @@ export default function RegisterForm() {
 
           {/* 🛠 Already have an account? */}
           <div className="flex justify-center text-sm">
-            <Link href="/admission/portal/login" className="text-primary hover:underline">
+            <Link
+              href="/admission/portal/login"
+              className="text-primary hover:underline"
+            >
               Already have an account? Login
             </Link>
           </div>
 
-          <GlidingButton isLoading={isPending} className="w-full">Create Account</GlidingButton>
+          <GlidingButton isLoading={isPending} className="w-full">
+            Create Account
+          </GlidingButton>
         </form>
       </Form>
     </div>
