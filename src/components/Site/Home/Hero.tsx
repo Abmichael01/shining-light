@@ -77,7 +77,9 @@ export default function Hero() {
         <p className="text-sm paragraph">{heroContents[current].paragraph}</p>
         <div className="flex gap-5">
           <GlidingButton className="bg-secondary">ENROLL NOW</GlidingButton>
-          <GlidingButton>TAKE A VIRTUAL TOUR</GlidingButton>
+          <GlidingButton>
+            <a href="/virtual-tour">TAKE A VIRTUAL TOUR</a>
+          </GlidingButton>
         </div>
       </div>
       <Records />

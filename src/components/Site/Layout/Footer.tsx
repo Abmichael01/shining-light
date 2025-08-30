@@ -35,7 +35,7 @@ export const footerData: FooterSection[] = [
 
 export default function Footer() {
   return (
-    <SectionPadding className="bg-primary py-20 mt-[200px] text-white">
+    <SectionPadding className="bg-primary py-20 text-white">
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Column 1: Logo & Description */}
         <div>

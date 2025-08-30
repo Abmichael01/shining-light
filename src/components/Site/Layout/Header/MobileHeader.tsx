@@ -19,9 +19,10 @@ type NavItemType = {
 
 interface Props {
   data: NavItemType[];
+  onLinkClick?: () => void;
 }
 
-export function MobileHeader({ data }: Props) {
+export function MobileHeader({ data, onLinkClick }: Props) {
     
   return (
     <div className="lg:hidden bg-white shadow-md p-4 overflow-hidden">
@@ -42,6 +43,7 @@ export function MobileHeader({ data }: Props) {
                       <Link
                         key={subIndex}
                         href={subItem.link}
+                        onClick={onLinkClick}
                         className="block text-sm text-gray-700 hover:text-primary transition-colors py-2 border-b"
                       >
                         {subItem.name}
@@ -57,6 +59,7 @@ export function MobileHeader({ data }: Props) {
               <Link
                 key={index}
                 href={item.link || "#"}
+                onClick={onLinkClick}
                 className="block text-base font-medium text-gray-900 hover:text-primary"
               >
                 {item.name}

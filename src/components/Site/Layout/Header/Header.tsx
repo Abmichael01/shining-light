@@ -26,23 +26,23 @@ const navs: NavItemType[] = [
     dropdown: [
       {
         name: "History",
-        link: "/about/history",
+        link: "/history",
       },
       {
         name: "Administration",
-        link: "/about/administration",
+        link: "/administration",
       },
       {
         name: "Anthem & Motto",
-        link: "/about/anthem",
+        link: "/anthem",
       },
       {
         name: "Facilities",
-        link: "/about/facilities",
+        link: "/facilities",
       },
       {
         name: "School Calendar",
-        link: "/about/calendar",
+        link: "/calendar",
       },
     ],
   },
@@ -50,24 +50,16 @@ const navs: NavItemType[] = [
     name: "ACADEMICS",
     dropdown: [
       {
+        name: "Subjects Offered",
+        link: "/subjects",
+      },
+      {
         name: "Curriculum",
-        link: "/academics/curriculum",
-      },
-      {
-        name: "Departments",
-        link: "/academics/departments",
-      },
-      {
-        name: "Examinations",
-        link: "/academics/exams",
+        link: "/curriculum",
       },
       {
         name: "Results",
-        link: "/academics/results",
-      },
-      {
-        name: "Subjects Offered",
-        link: "/academics/subjects",
+        link: "/results",
       },
     ],
   },
@@ -76,19 +68,19 @@ const navs: NavItemType[] = [
     dropdown: [
       {
         name: "How to Apply",
-        link: "/admission/how-to-apply",
+        link: "/how-to-apply",
       },
       {
         name: "Requirements",
-        link: "/admission/requirements",
+        link: "/requirements",
       },
       {
         name: "Tuition Fees",
-        link: "/admission/fees",
+        link: "/fees",
       },
       {
         name: "Open Days",
-        link: "/admission/open-days",
+        link: "/open-days",
       },
     ],
   },
@@ -97,23 +89,23 @@ const navs: NavItemType[] = [
     dropdown: [
       {
         name: "Student Portal",
-        link: "/students/portal",
+        link: "/portal",
       },
       {
         name: "CBT Exams",
-        link: "/students/cbt",
+        link: "/cbt",
       },
       {
         name: "Clubs & Societies",
-        link: "/students/clubs",
+        link: "/clubs",
       },
       {
         name: "Hostel Life",
-        link: "/students/hostel",
+        link: "/hostel",
       },
       {
         name: "E-Library",
-        link: "/students/library",
+        link: "/library",
       },
     ],
   },
@@ -146,7 +138,7 @@ export default function Header() {
           'absolute top-[100%] w-full left-0 right-0 overflow-hidden transition-all duration-700 ease-in-out',
           isOpen ? "max-h-screen" : "max-h-0"
         )}>
-          <MobileHeader data={navs} />
+          <MobileHeader data={navs} onLinkClick={() => setIsOpen(false)} />
         </nav>
 
         {isOpen && <div className="bg-black/50 "></div> }

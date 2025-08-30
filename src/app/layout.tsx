@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import { Inter, Bricolage_Grotesque } from "next/font/google";
+import { Poppins, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 
 
-const inter = Inter({
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
   display: "swap",
-  variable: "--font-inter",
+  variable: "--font-poppins",
 });
 
-const bricolageGrotesque = Bricolage_Grotesque({
+const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   variable: "--font-fancy",
   display: "swap",
 });
@@ -36,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${bricolageGrotesque.variable} antialiased`}
+        className={`${poppins.variable} ${playfairDisplay.variable} antialiased`}
       >
         <Providers>
           {children}
