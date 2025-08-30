@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function NewsLetter() {
   return (
-    <SectionPadding className="flex flex-col items-center text-center mt-[100px] py-20">
+    <SectionPadding className="flex flex-col items-center text-center py-20">
       {/* Image */}
       <img
         src="/newsletter.png"
