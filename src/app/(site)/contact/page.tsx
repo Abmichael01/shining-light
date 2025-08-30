@@ -229,7 +229,7 @@ export default function ContactPage() {
                   />
                 </div>
 
-                <GlidingButton type="submit" className="bg-primary w-full">
+                <GlidingButton className="bg-primary w-full">
                   <Send className="w-4 h-4" />
                   Send Message
                 </GlidingButton>
